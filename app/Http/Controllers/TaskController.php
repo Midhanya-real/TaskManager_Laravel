@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Repository\TasksRepository;
+use Illuminate\Http\Response;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -45,23 +48,26 @@ class TaskController extends Controller
      *
      * @param Request $request
      * @param Task $task
-     * @return View
+     * @return Application|ResponseFactory|Response|View
      */
-    public function show(Request $request, Task $task): view
+    public function show(Request $request, Task $task): Application|ResponseFactory|Response|view
     {
-        $task = $this->repository->showTask($request, $task);
-
-        return view('tasks.show-task', ['task' => $task]);
+        return $request->user()->can('view', $task)
+            ? view('tasks.show-task', ['task' => $task])
+            : abort(404);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
+     * @param Request $request
      * @param Task $task
-     * @return View
+     * @return Application|ResponseFactory|Response|View
      */
-    public function edit(Task $task): view
+    public function edit(Request $request, Task $task): Application|ResponseFactory|Response|view
     {
-        return view('tasks.edit', ['task' => $task]);
+        return $request->user()->can('update', $task)
+            ? view('tasks.edit', ['task' => $task])
+            : abort(404);
     }
 }

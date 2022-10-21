@@ -27,8 +27,6 @@ class UpdateForm extends Component
 
     public function update()
     {
-        $this->authorize('update', $this->task);
-
         $this->validate();
 
         $this->task->save();

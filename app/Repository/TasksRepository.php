@@ -19,16 +19,4 @@ class TasksRepository
             ? Task::all()
             : Task::whereBelongsTo($request->user())->get();
     }
-
-    /**
-     * @param Request $request
-     * @param Task $task
-     * @return Collection|bool
-     */
-    public function showTask(Request $request, Task $task): Task|bool
-    {
-        return $request->user()->can('view', $task)
-            ? Task::find($task->id)
-            : false;
-    }
 }
